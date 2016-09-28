@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "ContainerViewController.h"
 
 @interface AppDelegate ()
 
@@ -19,6 +20,12 @@
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
+    
+    // container作为侧边栏结构控制器
+    ContainerViewController *containerViewController = [[ContainerViewController alloc] init];
+    
+    self.window.rootViewController = containerViewController;
+
     [self.window makeKeyAndVisible];
     return YES;
 }

@@ -11,6 +11,10 @@
 		E4C4D9C81D9A666C00EED62F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4D9C71D9A666C00EED62F /* AppDelegate.m */; };
 		E4C4D9CA1D9A666C00EED62F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E4C4D9C91D9A666C00EED62F /* Assets.xcassets */; };
 		E4C4D9CD1D9A666C00EED62F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E4C4D9CB1D9A666C00EED62F /* LaunchScreen.storyboard */; };
+		E4C4D9D61D9A96E600EED62F /* SideViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4D9D51D9A96E600EED62F /* SideViewController.m */; };
+		E4C4D9D91D9A983400EED62F /* CenterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4D9D81D9A983400EED62F /* CenterViewController.m */; };
+		E4C4D9DC1D9A98EA00EED62F /* ContainerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4D9DB1D9A98EA00EED62F /* ContainerViewController.m */; };
+		E4C4D9DF1D9BB49C00EED62F /* SubViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E4C4D9DE1D9BB49C00EED62F /* SubViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,6 +25,14 @@
 		E4C4D9C91D9A666C00EED62F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E4C4D9CC1D9A666C00EED62F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E4C4D9CE1D9A666C00EED62F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E4C4D9D41D9A96E600EED62F /* SideViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SideViewController.h; sourceTree = "<group>"; };
+		E4C4D9D51D9A96E600EED62F /* SideViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SideViewController.m; sourceTree = "<group>"; };
+		E4C4D9D71D9A983400EED62F /* CenterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CenterViewController.h; sourceTree = "<group>"; };
+		E4C4D9D81D9A983400EED62F /* CenterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CenterViewController.m; sourceTree = "<group>"; };
+		E4C4D9DA1D9A98EA00EED62F /* ContainerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContainerViewController.h; sourceTree = "<group>"; };
+		E4C4D9DB1D9A98EA00EED62F /* ContainerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContainerViewController.m; sourceTree = "<group>"; };
+		E4C4D9DD1D9BB49C00EED62F /* SubViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubViewController.h; sourceTree = "<group>"; };
+		E4C4D9DE1D9BB49C00EED62F /* SubViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,6 +71,14 @@
 				E4C4D9CB1D9A666C00EED62F /* LaunchScreen.storyboard */,
 				E4C4D9CE1D9A666C00EED62F /* Info.plist */,
 				E4C4D9C31D9A666C00EED62F /* Supporting Files */,
+				E4C4D9D41D9A96E600EED62F /* SideViewController.h */,
+				E4C4D9D51D9A96E600EED62F /* SideViewController.m */,
+				E4C4D9D71D9A983400EED62F /* CenterViewController.h */,
+				E4C4D9D81D9A983400EED62F /* CenterViewController.m */,
+				E4C4D9DA1D9A98EA00EED62F /* ContainerViewController.h */,
+				E4C4D9DB1D9A98EA00EED62F /* ContainerViewController.m */,
+				E4C4D9DD1D9BB49C00EED62F /* SubViewController.h */,
+				E4C4D9DE1D9BB49C00EED62F /* SubViewController.m */,
 			);
 			path = SlideMenuView;
 			sourceTree = "<group>";
@@ -141,7 +161,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4C4D9C81D9A666C00EED62F /* AppDelegate.m in Sources */,
+				E4C4D9D91D9A983400EED62F /* CenterViewController.m in Sources */,
 				E4C4D9C51D9A666C00EED62F /* main.m in Sources */,
+				E4C4D9DF1D9BB49C00EED62F /* SubViewController.m in Sources */,
+				E4C4D9D61D9A96E600EED62F /* SideViewController.m in Sources */,
+				E4C4D9DC1D9A98EA00EED62F /* ContainerViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
