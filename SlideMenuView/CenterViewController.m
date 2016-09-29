@@ -25,7 +25,7 @@
     
     // 添加label
     contentLabel = [[UILabel alloc] init];
-    contentLabel.frame = CGRectMake(100, 300, 100, 50);
+    contentLabel.frame = CGRectMake(170, 300, 100, 50);
     contentLabel.text = @"welcome";
     [self.view addSubview:contentLabel];
     

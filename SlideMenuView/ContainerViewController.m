@@ -22,6 +22,9 @@ static const CGFloat kSideScaleFactor = 0.4;
     UIPanGestureRecognizer *leftSwipeGR; // 往左滑手势
     UIScreenEdgePanGestureRecognizer *rightSwipeEdgeGR; // 边缘往右滑手势
     UITapGestureRecognizer *tapGR; // 轻点闭合
+    
+    BOOL isLeftOpen;   // 左侧栏开闭flag
+    BOOL isRightOpen;  // 右侧栏开闭flag
 }
 
 @end
@@ -83,6 +86,7 @@ static const CGFloat kSideScaleFactor = 0.4;
     
     // 防止循环引用
     __weak typeof(centerViewController) wCenterViewController = centerViewController;
+    __weak typeof(self) wself = self;
     
     // 左侧
     leftSideViewController = [[SideViewController alloc] init];
@@ -92,9 +96,11 @@ static const CGFloat kSideScaleFactor = 0.4;
     leftSideViewController.tableArray = leftTableArray;
     leftSideViewController.tableSelectBlock = ^(NSString *str){
         wCenterViewController.content = str;
+        [wself closeLeftSideView];
     };
     [self.view addSubview:leftSideViewController.view];
     [self addChildViewController:leftSideViewController];
+    isLeftOpen = NO;
     
     // 右侧
     rightSideViewController = [[SideViewController alloc] init];
@@ -107,6 +113,7 @@ static const CGFloat kSideScaleFactor = 0.4;
     };
     [self.view addSubview:rightSideViewController.view];
     [self addChildViewController:rightSideViewController];
+    isRightOpen = NO;
     
     // 保证中间界面中在最上方（其实层次自己定，可上可下）
     [self.view bringSubviewToFront:centerViewController.view];
@@ -133,13 +140,77 @@ static const CGFloat kSideScaleFactor = 0.4;
 {
     NSLog(@"left clicked");
     // 展开左边栏
-    
+    if (isLeftOpen)
+    {
+        [self closeLeftSideView];
+    }
+    else
+    {
+        [self openLeftSideView];
+    }
 }
 
 - (void)rightButtonClicked
 {
     NSLog(@"right clicked");
     // 展开右边栏
+    if (isRightOpen)
+    {
+        [self closeRightSideView];
+    }
+    else
+    {
+        [self openRightSideView];
+    }
+}
+
+#pragma mark - 自动拉出和闭合
+- (void)openLeftSideView
+{
+    [self showShadow];
+    leftSwipeGR.enabled = NO;
+    [UIView animateWithDuration:0.2 animations:^{
+        centerViewController.view.center = CGPointMake(centerViewController.view.frame.size.width / 2 + centerViewController.view.frame.size.width * kSideScaleFactor, centerViewController.view.center.y);
+    } completion:^(BOOL finished) {
+        isLeftOpen = YES;
+    }];
+
+}
+
+- (void)closeLeftSideView
+{
+    [UIView animateWithDuration:0.2 animations:^{
+        centerViewController.view.center = CGPointMake(centerViewController.view.frame.size.width / 2, centerViewController.view.center.y);
+    }completion:^(BOOL finished) {
+        leftSwipeGR.enabled = YES;
+        [self hideShadow];
+        isLeftOpen = NO;
+    }];
+}
+
+- (void)openRightSideView
+{
+    CGAffineTransform leftMaxTransform = CGAffineTransformTranslate([[UIApplication sharedApplication].delegate window].transform, -self.view.frame.size.width * kSideScaleFactor, 0);
+    [self showLayer];
+    [UIView animateWithDuration:0.2 animations:^{
+        centerViewController.view.transform = leftMaxTransform;
+        rightSideViewController.view.transform = leftMaxTransform;
+    } completion:^(BOOL finished) {
+        isRightOpen = YES;
+    }];
+
+}
+
+- (void)closeRightSideView
+{
+    CGAffineTransform rightMaxTransform = CGAffineTransformTranslate([[UIApplication sharedApplication].delegate window].transform, 0, 0);
+    [UIView animateWithDuration:0.2 animations:^{
+        centerViewController.view.transform = rightMaxTransform;
+        rightSideViewController.view.transform = rightMaxTransform;
+    }completion:^(BOOL finished) {
+        [self hideLayer];
+        isRightOpen = NO;
+    }];
 }
 
 #pragma mark - 滑动手势
@@ -179,10 +250,12 @@ static const CGFloat kSideScaleFactor = 0.4;
                 if (centerViewController.view.center.x > centerViewController.view.frame.size.width / 2 + centerViewController.view.frame.size.width * kSideScaleFactor / 2)
                 {
                     centerViewController.view.center = CGPointMake(centerViewController.view.frame.size.width / 2 + centerViewController.view.frame.size.width * kSideScaleFactor, centerViewController.view.center.y);
+                    isLeftOpen = YES;
                 }
                 else
                 {
                     centerViewController.view.center = CGPointMake(self.view.frame.size.width / 2, centerViewController.view.center.y);
+                    isLeftOpen = NO;
                 }
             } completion:^(BOOL finished) {
                 if (centerViewController.view.center.x == centerViewController.view.frame.size.width / 2)
@@ -197,74 +270,81 @@ static const CGFloat kSideScaleFactor = 0.4;
         
 
     }
-//    else if (gesture == leftSwipeGR)
-//    {
-//        // 左滑是整体联动滑动
-//        // 添加阴影效果
-//        [self showLayer];
-//        
-//        // 相对偏移量
-//        CGFloat offsetX = [leftSwipeGR translationInView:self.view].x;
-//        
-//        // 设置view相对偏移,生成transform绝对偏移
-//        self.view.transform = CGAffineTransformTranslate(self.view.transform, offsetX, 0);
-//        
-//        // 根据偏移量来算渐变透明度
-//        CGFloat factor = self.view.transform.tx / (-self.view.frame.size.width * kSideScaleFactor);
-//        [self.view viewWithTag:100].backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5 * factor];
-//        
-//        // 防止累积偏移
-//        [leftSwipeGR setTranslation:CGPointZero inView:self.view];
-//        
-//        // 限制左右滑最大范围
-//        CGAffineTransform leftMaxTransform = CGAffineTransformTranslate([[UIApplication sharedApplication].delegate window].transform, -self.view.frame.size.width * kSideScaleFactor, 0);
-//        CGAffineTransform rightMaxTransform = CGAffineTransformTranslate([[UIApplication sharedApplication].delegate window].transform, 0, 0);
-//        if (self.view.transform.tx < -self.view.frame.size.width * kSideScaleFactor)
-//        {
-//            // 以屏幕边线作为基准线
-//            self.view.transform = leftMaxTransform;
-//        }
-//        else if (self.view.transform.tx > 0)
-//        {
-//            self.view.transform = rightMaxTransform;
-//        }
-//        
-//        // 松开后如果过了中线就直接滑出，否则闭合
-//        if (gesture.state == UIGestureRecognizerStateEnded)
-//        {
-//            [UIView animateWithDuration:0.2 animations:^{
-//                if (self.view.transform.tx < -self.view.frame.size.width * kSideScaleFactor / 2)
-//                {
-//                    self.view.transform = leftMaxTransform;
-//                }
-//                else
-//                {
-//                    self.view.transform = rightMaxTransform;
-//                    
-//                }
-//            }
-//            completion:^(BOOL finished) {
-//                if (self.view.transform.tx == leftMaxTransform.tx)
-//                {
-//                    [self.view viewWithTag:100].backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
-//                }
-//                else if (self.view.transform.tx == rightMaxTransform.tx)
-//                {
-//                    [self hideLayer];
-//                }
-//            }];
-//            
-//        }
-//        
-//    }
+    else if (gesture == leftSwipeGR)
+    {
+        // 左滑是整体联动滑动
+        // 添加阴影效果
+        [self showLayer];
+        
+        // 相对偏移量
+        CGFloat offsetX = [leftSwipeGR translationInView:self.view].x;
+        
+        // 设置view相对偏移,生成transform绝对偏移
+        centerViewController.view.transform = CGAffineTransformTranslate(centerViewController.view.transform, offsetX, 0);
+        rightSideViewController.view.transform = CGAffineTransformTranslate(rightSideViewController.view.transform, offsetX, 0);
+        
+        // 根据偏移量来算渐变透明度
+        CGFloat factor = centerViewController.view.transform.tx / (-centerViewController.view.frame.size.width * kSideScaleFactor);
+        [self.view viewWithTag:100].backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5 * factor];
+        
+        // 防止累积偏移
+        [leftSwipeGR setTranslation:CGPointZero inView:self.view];
+        
+        // 限制左右滑最大范围
+        CGAffineTransform leftMaxTransform = CGAffineTransformTranslate([[UIApplication sharedApplication].delegate window].transform, -self.view.frame.size.width * kSideScaleFactor, 0);
+        CGAffineTransform rightMaxTransform = CGAffineTransformTranslate([[UIApplication sharedApplication].delegate window].transform, 0, 0);
+        if (centerViewController.view.transform.tx < -self.view.frame.size.width * kSideScaleFactor)
+        {
+            // 以屏幕边线作为基准线
+            centerViewController.view.transform = leftMaxTransform;
+            rightSideViewController.view.transform = leftMaxTransform;
+        }
+        else if (centerViewController.view.transform.tx > 0)
+        {
+            centerViewController.view.transform = rightMaxTransform;
+            rightSideViewController.view.transform = rightMaxTransform;
+        }
+        
+        // 松开后如果过了中线就直接滑出，否则闭合
+        if (gesture.state == UIGestureRecognizerStateEnded)
+        {
+            [UIView animateWithDuration:0.2 animations:^{
+                if (centerViewController.view.transform.tx < -centerViewController.view.frame.size.width * kSideScaleFactor / 2)
+                {
+                    centerViewController.view.transform = leftMaxTransform;
+                    rightSideViewController.view.transform = leftMaxTransform;
+                    isRightOpen = YES;
+                }
+                else
+                {
+                    centerViewController.view.transform = rightMaxTransform;
+                    rightSideViewController.view.transform = rightMaxTransform;
+                    isRightOpen = NO;
+                }
+            }
+            completion:^(BOOL finished) {
+                if (centerViewController.view.transform.tx == leftMaxTransform.tx)
+                {
+                    [self.view viewWithTag:100].backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
+                }
+                else if (self.view.transform.tx == rightMaxTransform.tx)
+                {
+                    [self hideLayer];
+                }
+            }];
+            
+        }
+        
+    }
     else if (gesture == tapGR)
     {
-        leftSwipeGR.enabled = NO;
-        [UIView animateWithDuration:0.2 animations:^{
-            centerViewController.view.center = CGPointMake(centerViewController.view.frame.size.width / 2, centerViewController.view.center.y);
-        }completion:^(BOOL finished) {
-            leftSwipeGR.enabled = YES;
-        }];
+        
+        [self closeLeftSideView];
+        
+        
+        
+        [self closeRightSideView];
+        
     }
 }
 
@@ -291,25 +371,25 @@ static const CGFloat kSideScaleFactor = 0.4;
 - (void)showLayer
 {
     // 保证只添加一次
-    if (![self.view viewWithTag:100])
+    if (![centerViewController.view viewWithTag:100])
     {
         UIView *layerView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)];
         layerView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.5];
         layerView.tag = 100;
         // 避免遮挡触摸事件
         layerView.userInteractionEnabled = YES;
-        [self.view addSubview:layerView];
+        [centerViewController.view addSubview:layerView];
     }
-    [[self.view viewWithTag:100] addGestureRecognizer:leftSwipeGR];
-    [self.view viewWithTag:100].hidden = NO;
+    [[centerViewController.view viewWithTag:100] addGestureRecognizer:leftSwipeGR];
+    [centerViewController.view viewWithTag:100].hidden = NO;
 }
 
 - (void)hideLayer
 {
     // 移除后使得原来的view可以接受触摸事件
-    [[self.view viewWithTag:100] setHidden:YES];
+    [[centerViewController.view viewWithTag:100] setHidden:YES];
     // 原来的必须要重新设置一下手势
-    [self.view addGestureRecognizer:leftSwipeGR];
+    [centerViewController.view addGestureRecognizer:leftSwipeGR];
 }
 
 
