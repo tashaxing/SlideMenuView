@@ -11,7 +11,6 @@
 
 @interface CenterViewController ()
 {
-    UINavigationController *nav;
     UILabel *contentLabel;
 }
 @end
@@ -24,7 +23,6 @@
     // Do any additional setup after loading the view.
     self.view.backgroundColor = [UIColor whiteColor];
     
-        
     // 添加label
     contentLabel = [[UILabel alloc] init];
     contentLabel.frame = CGRectMake(100, 300, 100, 50);
@@ -67,7 +65,8 @@
 - (void)onButtonClicked
 {
     SubViewController *subViewController = [[SubViewController alloc] init];
-    [self.navigationController pushViewController:subViewController animated:YES];
+    
+    [self presentViewController:subViewController animated:YES completion:nil];
 }
 
 
