@@ -90,7 +90,7 @@ static const CGFloat kSideScaleFactor = 0.4;
     
     // 左侧
     leftSideViewController = [[SideViewController alloc] init];
-    leftSideViewController.view.frame = CGRectMake(0, 0, self.view.frame.size.width * kSideScaleFactor, self.view.frame.size.height);
+    leftSideViewController.view.frame = CGRectMake(-self.view.frame.size.width * kSideScaleFactor / 2, 0, self.view.frame.size.width * kSideScaleFactor, self.view.frame.size.height);
     leftSideViewController.view.backgroundColor = [UIColor redColor];
     NSArray *leftTableArray = @[@"home", @"feature", @"about", @"exit"];
     leftSideViewController.tableArray = leftTableArray;
@@ -171,6 +171,7 @@ static const CGFloat kSideScaleFactor = 0.4;
     leftSwipeGR.enabled = NO;
     [UIView animateWithDuration:0.2 animations:^{
         centerViewController.view.center = CGPointMake(centerViewController.view.frame.size.width / 2 + centerViewController.view.frame.size.width * kSideScaleFactor, centerViewController.view.center.y);
+        leftSideViewController.view.center = CGPointMake(leftSideViewController.view.frame.size.width / 2, leftSideViewController.view.center.y);
     } completion:^(BOOL finished) {
         isLeftOpen = YES;
     }];
@@ -181,6 +182,7 @@ static const CGFloat kSideScaleFactor = 0.4;
 {
     [UIView animateWithDuration:0.2 animations:^{
         centerViewController.view.center = CGPointMake(centerViewController.view.frame.size.width / 2, centerViewController.view.center.y);
+        leftSideViewController.view.center = CGPointMake(0, leftSideViewController.view.center.y);
     }completion:^(BOOL finished) {
         leftSwipeGR.enabled = YES;
         [self hideShadow];
@@ -235,12 +237,14 @@ static const CGFloat kSideScaleFactor = 0.4;
         {
             CGPoint translation = [rightSwipeEdgeGR translationInView:self.view];
             centerViewController.view.center = CGPointMake(centerViewController.view.center.x + translation.x, centerViewController.view.center.y);
+            leftSideViewController.view.center = CGPointMake(leftSideViewController.view.center.x + translation.x / 2, leftSideViewController.view.center.y);
             NSLog(@"%f", translation.x);
             [rightSwipeEdgeGR setTranslation:CGPointZero inView:self.view];
             // 限制滑动范围
             if (centerViewController.view.center.x > centerViewController.view.frame.size.width / 2 + centerViewController.view.frame.size.width * kSideScaleFactor)
             {
                 centerViewController.view.center = CGPointMake(centerViewController.view.frame.size.width / 2 + centerViewController.view.frame.size.width * kSideScaleFactor, centerViewController.view.center.y);
+                leftSideViewController.view.center = CGPointMake(leftSideViewController.view.frame.size.width / 2, leftSideViewController.view.center.y);
             }
             
         }
@@ -250,11 +254,13 @@ static const CGFloat kSideScaleFactor = 0.4;
                 if (centerViewController.view.center.x > centerViewController.view.frame.size.width / 2 + centerViewController.view.frame.size.width * kSideScaleFactor / 2)
                 {
                     centerViewController.view.center = CGPointMake(centerViewController.view.frame.size.width / 2 + centerViewController.view.frame.size.width * kSideScaleFactor, centerViewController.view.center.y);
+                    leftSideViewController.view.center = CGPointMake(leftSideViewController.view.frame.size.width / 2, leftSideViewController.view.center.y);
                     isLeftOpen = YES;
                 }
                 else
                 {
                     centerViewController.view.center = CGPointMake(self.view.frame.size.width / 2, centerViewController.view.center.y);
+                    leftSideViewController.view.center = CGPointMake(0, leftSideViewController.view.center.y);
                     isLeftOpen = NO;
                 }
             } completion:^(BOOL finished) {
@@ -340,8 +346,6 @@ static const CGFloat kSideScaleFactor = 0.4;
     {
         
         [self closeLeftSideView];
-        
-        
         
         [self closeRightSideView];
         
